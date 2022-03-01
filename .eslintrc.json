@@ -1,0 +1,48 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": [
+        "airbnb-base"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "import"
+    ],
+    "rules": {
+        "comma-dangle":["error", "always-multiline"],
+        "quotes":["error", "single", {"allowTemplateLiterals" : true}],
+        "sort-imports": ["error", {
+            "ignoreCase": true,
+            "ignoreDeclarationSort": false,
+            "ignoreMemberSort": false,
+            "memberSyntaxSortOrder": ["all", "single" , "multiple","none"],
+            "allowSeparatedGroups": true
+        }],
+        "object-curly-newline":["error",{"minProperties": 1}],
+        "object-property-newline":["error",{ "allowAllPropertiesOnSameLine": false }],
+        "indent": ["error", "tab"],
+        "no-underscore-dangle":["error", {"allow": ["_id"]}],
+        "no-tabs": "off",
+        "import/order":"off",
+        "consistent-return":"warn",
+        "import/no-named-as-default-member":"off",
+        "no-unused-vars":"warn",
+        "no-shadow":"warn",
+        "no-undef":"warn",
+        "linebreak-style":"off",
+        "prefer-destructuring":"warn",
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
+        "array-bracket-newline":["error",{"minItems": 1}],
+        "array-element-newline":["error","always"]
+    }
+}
+
