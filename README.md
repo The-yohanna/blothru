@@ -14,5 +14,6 @@ The primary technologies used are Node.js and MySQL
 - [cors](https://www.npmjs.com/package/cors) used to enable CORS in express.
 - [body-parser](https://www.npmjs.com/package/body-parser) parses incoming request bodies.
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) provides tokens for authentication.
+- [eslint](https://eslint.org/) for making code more consistent and avoiding bugs.
 
 ## Endpoints
