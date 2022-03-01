@@ -15,5 +15,6 @@ The primary technologies used are Node.js and MySQL
 - [body-parser](https://www.npmjs.com/package/body-parser) parses incoming request bodies.
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) provides tokens for authentication.
 - [eslint](https://eslint.org/) for making code more consistent and avoiding bugs.
+- [dotenv](https://www.npmjs.com/package/dotenv) loads environment variables.
 
 ## Endpoints

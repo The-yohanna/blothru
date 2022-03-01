@@ -8,12 +8,10 @@
     "extends": [
         "airbnb-base"
     ],
-    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest"
     },
     "plugins": [
-        "@typescript-eslint",
         "import"
     ],
     "rules": {
@@ -42,7 +40,8 @@
         "import/extensions": "off",
         "import/no-unresolved": "off",
         "array-bracket-newline":["error",{"minItems": 1}],
-        "array-element-newline":["error","always"]
+        "array-element-newline":["error","always"],
+        "import/no-import-module-exports":"off"
     }
 }
 
