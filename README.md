@@ -28,7 +28,8 @@ The primary technologies used are Node.js and MySQL
 | ---- | ----------- |
 | DB_NAME | The name of the MySQL database to store the data in. |
 | DB_USER | The name of the MySQL user i.e root. |
-| DB_PASS | MySQL user password |
+| DB_PASS | MySQL user password. |
+| DB_HOST | MySQL server host. |
 | SECRET_KEY | A secret key of choice combined with the header and payload in signing the JSON web token. |
 | SENDGRID_API_KEY | The API key for [sendgrid](https://sendgrid.com). Used to send E-Mails. |
 | SENDGRID_FROM_ADDRESS | The sender address for E-Mails sent via [sendgrid](https://sendgrid.com). |
