@@ -42,14 +42,22 @@ ProfessionCategory.hasMany(Profession, {
 		name: 'professionCategoryId',
 		allowNull: false,
 	},
+	as: 'professions',
 });
-Profession.belongsTo(ProfessionCategory);
+Profession.belongsTo(ProfessionCategory, {
+	foreignKey: {
+		name: 'professionCategoryId',
+		allowNull: false,
+	},
+});
 
 Profession.belongsToMany(Services, {
 	through: 'professionServices',
+	as: 'services',
 });
 Services.belongsToMany(Profession, {
 	through: 'professionServices',
+	as: 'professions',
 });
 
 export {

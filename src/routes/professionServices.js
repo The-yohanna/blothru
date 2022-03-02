@@ -13,7 +13,13 @@ const router = express.Router();
 router.get('/profession-category', async (req, res) => {
 	try {
 		const categories = await ProfessionCategory.findAll({
-			include: Profession,
+			include: {
+				model: Profession,
+				as: 'professions',
+				attributes: {
+					exclude: 'professionCategoryId',
+				},
+			},
 		});
 		return res.json({
 			success: true,
@@ -32,6 +38,7 @@ router.get('/profession', async (req, res) => {
 		const professions = await Profession.findAll({
 			include: {
 				model: Services,
+				as: 'services',
 				through: {
 					attributes: [],
 				},
@@ -54,6 +61,7 @@ router.get('/services', async (req, res) => {
 		const services = await Services.findAll({
 			include: {
 				model: Profession,
+				as: 'professions',
 				through: {
 					attributes: [],
 				},
@@ -78,6 +86,7 @@ router.get('/profession-category/:id', async (req, res) => {
 		} = req.params;
 		const category = await ProfessionCategory.findByPk(id, {
 			include: Profession,
+			as: 'professions',
 		});
 		return res.json({
 			success: true,
@@ -99,6 +108,7 @@ router.get('/profession/:id', async (req, res) => {
 		const profession = await Profession.findByPk(id, {
 			include: {
 				model: Services,
+				as: 'services',
 				through: {
 					attributes: [],
 				},
@@ -124,6 +134,7 @@ router.get('/services/:id', async (req, res) => {
 		const service = await Services.findByPk(id, {
 			include: {
 				model: Profession,
+				as: 'professions',
 				through: {
 					attributes: [],
 				},
@@ -242,7 +253,7 @@ router.post('/services', verifyToken, isAdmin, async (req, res) => {
 		}));
 });
 
-router.post('/services/:id/add-profession-service', verifyToken, isAdmin, async (req, res) => {
+router.post('/services/:id/add-profession', verifyToken, isAdmin, async (req, res) => {
 	try {
 		const {
 			id,
@@ -358,7 +369,7 @@ router.put('/services/:id', verifyToken, isAdmin, async (req, res) => {
 	}
 });
 
-router.put('/services/:id/remove-profession-service', verifyToken, isAdmin, async (req, res) => {
+router.put('/services/:id/remove-profession', verifyToken, isAdmin, async (req, res) => {
 	try {
 		const {
 			id,
