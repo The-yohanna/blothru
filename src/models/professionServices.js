@@ -37,7 +37,12 @@ const Services = sequelize.define('Services', {
 	},
 });
 
-ProfessionCategory.hasMany(Profession);
+ProfessionCategory.hasMany(Profession, {
+	foreignKey: {
+		name: 'professionCategoryId',
+		allowNull: false,
+	},
+});
 Profession.belongsTo(ProfessionCategory);
 
 Profession.belongsToMany(Services, {

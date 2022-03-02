@@ -107,13 +107,13 @@ router.post('/login', async (req, res) => {
 				expiresIn: 86400,
 			},
 		);
-		res.json({
+		return res.json({
 			success: true,
 			message: 'Login Successful!',
-			token,
+			data: token,
 		});
 	} catch (err) {
-		res.json({
+		return res.json({
 			success: false,
 			message: err.message,
 		});
@@ -169,13 +169,13 @@ router.post('/forgot-password', async (req, res) => {
 		};
 
 		await sgMail.send(msg);
-		res.json({
+		return res.json({
 			success: true,
 			mesage: 'Recovery email sent',
-			token,
+			data: token,
 		});
 	} catch (err) {
-		res.json({
+		return res.json({
 			success: false,
 			message: err.message,
 		});
@@ -203,12 +203,12 @@ router.put('/reset-password', verifyToken, validations.slice(1), async (req, res
 				email,
 			},
 		});
-		res.json({
+		return res.json({
 			success: true,
 			message: 'Password reset succesful',
 		});
 	} catch (err) {
-		res.json({
+		return res.json({
 			success: false,
 			message: err.message,
 		});
