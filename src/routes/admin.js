@@ -73,93 +73,98 @@ router.post('/register', validations, async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-	const {
-		email,
-		password,
-	} = req.body;
-
-	const adminExists = await Admin.findOne({
-		where: {
+	try {
+		const {
 			email,
-		},
-	});
-	if (!adminExists) res.send('Admin not found');
+			password,
+		} = req.body;
 
-	const validPassword = await bcrypt.compare(password, adminExists.password);
-	if (!validPassword) res.send('The password is incorrect');
+		const adminExists = await Admin.findOne({
+			where: {
+				email,
+			},
+		});
+		if (!adminExists) res.send('Admin not found');
 
-	jwt.sign(
-		{
-			id: adminExists.id,
-			email: adminExists.email,
-		},
-		process.env.SECRET_KEY,
-		{
-			expiresIn: 86400,
-		},
-		(err, token) => {
-			if (err) {
-				res.send(err);
-			}
-			res.send(`Login succesful token: ${token}`);
-		},
-	);
+		const validPassword = await bcrypt.compare(password, adminExists.password);
+		if (!validPassword) res.send('The password is incorrect');
+
+		const token = jwt.sign(
+			{
+				id: adminExists.id,
+				email: adminExists.email,
+				admin: true,
+			},
+			process.env.SECRET_KEY,
+			{
+				expiresIn: 86400,
+			},
+		);
+		res.send({
+			message: 'Login Successful!',
+			token,
+		});
+	} catch (err) {
+		res.send(err.message);
+	}
 });
 
 router.post('/forgotpass', async (req, res) => {
-	const {
-		email,
-	} = req.body;
-
-	const adminExists = await Admin.findOne({
-		where: {
+	try {
+		const {
 			email,
-		},
-	});
-	if (!adminExists) res.send('No admin with such email');
+		} = req.body;
 
-	jwt.sign(
-		{
-			id: adminExists.id,
-			email: adminExists.mail,
-		},
-		process.env.SECRET_KEY,
-		{
-			expiresIn: 3600,
-		},
-		(err, token) => {
-			if (err) res.send(err);
-			res.send(token);
-		},
-	);
+		const adminExists = await Admin.findOne({
+			where: {
+				email,
+			},
+		});
+		if (!adminExists) res.send('No admin with such email');
 
-	const msg = {
-		from: process.env.SENDGRID_FROM_ADDRESS,
-		to: email,
-		subject: 'Blothru - Password Reset',
-		html: `
-		<head>
-		 <style>
-		  body, h3, p {
-			  font-size: 12px,
-			  font-family: sans-serif,
-			  color: #000000,
-		  }
-		 </style>
-		</head>
-		<body>
-			<h3>Hello,</h3>
-			<p>You are receiving this email because you(or someone else) has requested password reset for your account.</p>
-			<p>Please click this link or paste it in your browser within one hour of receiving this email.</p>
-			<p><a href="http://localhost:8080/admin/resetpass">Password Reset</a></p>
-			<p>If you did not request a password reset, please ignore this email.</p>
-		</body>
-      `,
-	};
+		const token = jwt.sign(
+			{
+				id: adminExists.id,
+				email: adminExists.mail,
+			},
+			process.env.SECRET_KEY,
+			{
+				expiresIn: 3600,
+			},
+		);
 
-	await sgMail.send(msg, (err) => {
-		if (err) res.send(err);
-	});
+		const msg = {
+			from: process.env.SENDGRID_FROM_ADDRESS,
+			to: email,
+			subject: 'Blothru - Password Reset',
+			html: `
+			<head>
+			 <style>
+			  body, h3, p {
+				  font-size: 12px,
+				  font-family: sans-serif,
+				  color: #000000,
+			  }
+			 </style>
+			</head>
+			<body>
+				<h3>Hello,</h3>
+				<p>You are receiving this email because you(or someone else) has requested password reset for your account.</p>
+				<p>Please click this link or paste it in your browser within one hour of receiving this email.</p>
+				<p><a href="http://localhost:8080/admin/resetpass">Password Reset</a></p>
+				<p>If you did not request a password reset, please ignore this email.</p>
+			</body>
+		  `,
+		};
+
+		await sgMail.send(msg);
+		res.send({
+			mesage: 'Recovery email sent',
+			token,
+		});
+	} catch (err) {
+		res.send(err.message);
+	}
 });
 
 router.put('/resetpass', verifyToken, validations.slice(1), async (req, res) => {
