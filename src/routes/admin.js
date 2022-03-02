@@ -68,8 +68,15 @@ router.post('/register', validations, async (req, res) => {
 		fullName,
 		email,
 		password: hashedPassword,
-	}).then((data) => res.send(data))
-		.catch((err) => res.status(400).send(err.message));
+	}).then((data) => res.json({
+		sucess: true,
+		message: 'Registration successful',
+		data,
+	}))
+		.catch((err) => res.json({
+			success: false,
+			message: err.message,
+		}));
 });
 
 router.post('/login', async (req, res) => {
@@ -100,16 +107,20 @@ router.post('/login', async (req, res) => {
 				expiresIn: 86400,
 			},
 		);
-		res.send({
+		res.json({
+			success: true,
 			message: 'Login Successful!',
 			token,
 		});
 	} catch (err) {
-		res.send(err.message);
+		res.json({
+			success: false,
+			message: err.message,
+		});
 	}
 });
 
-router.post('/forgotpass', async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
 	try {
 		const {
 			email,
@@ -158,16 +169,20 @@ router.post('/forgotpass', async (req, res) => {
 		};
 
 		await sgMail.send(msg);
-		res.send({
+		res.json({
+			success: true,
 			mesage: 'Recovery email sent',
 			token,
 		});
 	} catch (err) {
-		res.send(err.message);
+		res.json({
+			success: false,
+			message: err.message,
+		});
 	}
 });
 
-router.put('/resetpass', verifyToken, validations.slice(1), async (req, res) => {
+router.put('/reset-password', verifyToken, validations.slice(1), async (req, res) => {
 	try {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -188,9 +203,15 @@ router.put('/resetpass', verifyToken, validations.slice(1), async (req, res) => 
 				email,
 			},
 		});
-		res.send('Password reset successful');
+		res.json({
+			success: true,
+			message: 'Password reset succesful',
+		});
 	} catch (err) {
-		res.send(err.message);
+		res.json({
+			success: false,
+			message: err.message,
+		});
 	}
 });
 
