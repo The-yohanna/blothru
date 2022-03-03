@@ -1,5 +1,6 @@
 import adminRoute from './routes/admin.js';
 import professionServicesRoute from './routes/professionServices.js';
+import stylistRoute from './routes/stylist.js';
 
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({
 
 app.use('/admin', adminRoute);
 app.use('/profession-services', professionServicesRoute);
+app.use('/stylist', stylistRoute);
 
 const PORT = process.env.PORT || 8080;
 

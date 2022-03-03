@@ -1,4 +1,6 @@
-import Admin from '../models/users.js';
+import {
+	Admin,
+} from '../models/users.js';
 import verifyToken from '../middleware/verifyToken.js';
 
 import bcrypt from 'bcrypt';
@@ -17,7 +19,14 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const router = express.Router();
 
 const validations = [
-	check('fullName')
+	check('firstName')
+		.trim()
+		.isLength({
+			min: 3,
+		})
+		.escape()
+		.withMessage('Name is too short.'),
+	check('lastName')
 		.trim()
 		.isLength({
 			min: 3,
@@ -49,7 +58,8 @@ router.post('/register', validations, async (req, res) => {
 		});
 	}
 	const {
-		fullName,
+		firstName,
+		lastName,
 		email,
 		password,
 	} = req.body;
@@ -60,12 +70,18 @@ router.post('/register', validations, async (req, res) => {
 		},
 	});
 
-	if (adminExists) return res.status(404).send('Admin exists');
+	if (adminExists) {
+		return res.json({
+			success: false,
+			message: 'Admin user exists, login instead',
+		});
+	}
 
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	await Admin.create({
-		fullName,
+		firstName,
+		lastName,
 		email,
 		password: hashedPassword,
 	}).then((data) => res.json({
