@@ -4,7 +4,9 @@ import {
 	Stylist,
 } from '../models/users.js';
 
+import bcrypt from 'bcrypt';
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import {
 	check,
 	validationResult,
@@ -44,7 +46,7 @@ const validations = [
 		.withMessage('Enter a valid date'),
 ];
 
-router.post('/send-application', validations, fileUpload, async (req, res) => {
+router.post('/send-application', fileUpload, validations, async (req, res) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({
@@ -85,8 +87,8 @@ router.post('/send-application', validations, fileUpload, async (req, res) => {
 		email,
 		phoneNumber,
 		dateOfBirth,
-		photo: req.files.photo,
-		attachments: req.files.attachments,
+		photo: req.files.photo.location,
+		attachments: req.files.attachments.location,
 		summary,
 	}).then((data) => res.json({
 		sucess: true,
@@ -97,6 +99,47 @@ router.post('/send-application', validations, fileUpload, async (req, res) => {
 			success: false,
 			message: err.message,
 		}));
+});
+
+router.post('/login', async (req, res) => {
+	try {
+		const {
+			email,
+			password,
+		} = req.body;
+
+		const stylistExists = await Stylist.findOne({
+			where: {
+				email,
+			},
+		});
+		if (!stylistExists) res.send('stylist not found');
+
+		const validPassword = await bcrypt.compare(password, stylistExists.password);
+		if (!validPassword) res.send('The password is incorrect');
+
+		const token = jwt.sign(
+			{
+				id: stylistExists.id,
+				email: stylistExists.email,
+				stylist: true,
+			},
+			process.env.SECRET_KEY,
+			{
+				expiresIn: 86400,
+			},
+		);
+		return res.json({
+			success: true,
+			message: 'Login Successful!',
+			data: token,
+		});
+	} catch (err) {
+		return res.json({
+			success: false,
+			message: err.message,
+		});
+	}
 });
 
 export default router;

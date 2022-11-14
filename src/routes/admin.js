@@ -1,7 +1,9 @@
+import isAdmin from '../middleware/isAdmin.js';
+import verifyToken from '../middleware/verifyToken.js';
 import {
 	Admin,
+	Applicant,
 } from '../models/users.js';
-import verifyToken from '../middleware/verifyToken.js';
 
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
@@ -226,6 +228,22 @@ router.put('/reset-password', verifyToken, validations.slice(1), async (req, res
 	} catch (err) {
 		return res.json({
 			success: false,
+			message: err.message,
+		});
+	}
+});
+
+router.get('/get-applications', verifyToken, isAdmin, async (req, res) => {
+	try {
+		const applications = await Applicant.findAll();
+		res.json({
+			success: true,
+			message: 'Here are the current applications',
+			data: applications,
+		});
+	} catch (err) {
+		res.json({
+			success: true,
 			message: err.message,
 		});
 	}

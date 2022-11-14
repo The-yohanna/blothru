@@ -25,5 +25,5 @@ app.use('/stylist', stylistRoute);
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
+	console.log(`Server is running on port ${PORT}, your access key is ${process.env.BUCKET_NAME}`);
 });

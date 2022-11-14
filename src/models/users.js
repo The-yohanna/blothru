@@ -95,6 +95,10 @@ const Stylist = sequelize.define('Stylist', {
 		},
 		defaultValue: 5,
 	},
+	stripeConnectId: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
 	bio: {
 		type: DataTypes.STRING,
 		defaultValue: null,
